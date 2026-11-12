@@ -1,82 +1,91 @@
 # ENVIS Ticket Request & Account Handler Manager
 
-A Discord-style ticket and account-handling system for DENR-EMB Region VII
-(ENVIS). Staff raise requests, handlers review them, and every decision is
-confirmed by email — all in one auditable workspace.
+A centralized, Discord-style ticketing and account-handling platform for **DENR-EMB Region VII (ENVIS)**. It replaces fragmented, ad-hoc account requests with a single auditable workflow — from public intake to approval, provisioning, and email correspondence.
 
-![Login](docs/screenshots/login.png)
+![ENVIS Staff Workspace](docs/screenshots/dashboard.png)
 
-## Overview
+## Why It Matters
 
-The system replaces ad-hoc account requests (chat messages, paper forms, shared
-spreadsheets) with a single workflow:
+Account and access requests in government operations often move through chat messages, paper forms, and spreadsheets — making them hard to track, easy to lose, and difficult to audit. This system provides:
 
-- A public portal lets anyone request access without an account.
-- Staff handle requests in a shared inbox and reply by email.
-- Internal tickets can carry **multiple accounts** that are approved or rejected
-  individually.
-- Approved accounts are provisioned automatically and credentials are delivered
-  to the requester by email.
-- Every ticket, account decision, message, and outgoing email is recorded.
+- **A single source of truth** for every access request, ticket, decision, and message.
+- **Transparency for requesters** through reference-number tracking and email updates.
+- **Accountability for handlers** with role-based actions, recorded approvals/rejections, and a complete correspondence trail.
+- **Faster, safer provisioning** by handling multiple accounts in one ticket and delivering outcomes directly by email.
 
-## Screenshots
+## At a Glance
 
-| Public access portal | Staff inbox |
+| Public Access Portal | Staff Workspace |
+|:--:|:--:|
+| ![Public access portal](docs/screenshots/request-access.png) | ![Ticket dashboard](docs/screenshots/dashboard.png) |
+| *Anyone can submit and track a request without an account.* | *Handlers review, prioritize, and act on requests in one place.* |
+
+| Shared Inbox & Triage | Request Detail & Reply |
+|:--:|:--:|
+| ![Staff inbox](docs/screenshots/inbox.png) | ![Request detail](docs/screenshots/request-detail.png) |
+| *Incoming requests are triaged, assigned, and managed centrally.* | *Staff reply by email and maintain a full conversation thread.* |
+
+| Ticket Conversation & Account Decisions |
+|:--:|
+| ![Ticket detail](docs/screenshots/ticket-detail.png) |
+| *A single ticket can carry multiple accounts, each approved or rejected with a recorded outcome.* |
+
+## How It Works
+
+The platform supports the complete lifecycle of an ENVIS access request:
+
+1. **Public intake** — A requester submits an access or account request through the public portal (no staff sign-in required) and receives a unique reference number.
+2. **Confirmation & notification** — The requester receives an email confirmation, while the ENVIS team is notified of the new request.
+3. **Inbox triage** — Handlers review incoming requests in a shared inbox, update status (*New → In Review → Contacted → Approved / Rejected / Closed*), assign ownership, and reply directly by email.
+4. **Ticket handling** — Internal tickets organize the work. A single ticket can contain **multiple account rows**, each with its own role, division, and decision.
+5. **Account decisions** — Authorized handlers approve or reject accounts individually or in bulk. Approved accounts are provisioned and credentials are delivered to the requester by email; rejections include the recorded reason.
+6. **Email correspondence & outbox** — Notifications, replies, and credential deliveries are queued, logged, and traceable. Failed deliveries can be retried without recreating messages, so correspondence is never silently lost.
+7. **Administration** — Role-based permissions govern who can view, approve, manage users, and manage accounts, ensuring actions are limited to authorized personnel.
+
+## Request Access Guide (Public Users)
+
+This section is for **requesters** using the public portal. No staff account is required.
+
+### Quick steps
+
+1. **Open the Request Access portal** and select **New request**.
+2. **Enter your details** — full name and a valid email address (required), plus organization/division if applicable.
+3. **Describe the access you need** — choose the request type and requested access/role, then provide a clear subject and message.
+4. **Submit the request** — after submission, save your **reference number** (e.g. `REQ-YYYYMMDD-####`). A confirmation is sent to your email.
+5. **Track your request** — open **Check status**, enter your reference number and the same email address to view the current status and updates.
+
+### Request status at a glance
+
+| Status | Meaning |
 |---|---|
-| ![Request access](docs/screenshots/request-access.png) | ![Inbox](docs/screenshots/inbox.png) |
+| **New** | Received and awaiting review |
+| **In Review** | Being validated by a handler |
+| **Contacted** | The team has replied or requested information |
+| **Approved** | Approved; access/account details provided as instructed |
+| **Rejected** | Not approved; see the message for the reason or next steps |
+| **Closed** | Completed; no further action pending |
 
-| Ticket dashboard | Ticket conversation |
-|---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Ticket detail](docs/screenshots/ticket-detail.png) |
+### Download the full user manual
 
-### Request detail and reply
+For detailed, step-by-step instructions with screenshots, download the guide:
 
-![Request detail](docs/screenshots/request-detail.png)
+**[📄 Request Access User Guide (PDF)](docs/Request-Access-User-Guide.pdf)**
 
-## Workflow
+> Tip: Keep your reference number and use the same email address when checking status. Do not include passwords or sensitive credentials in your request message.
 
-### 1. Public access request
+## Key Capabilities
 
-A requester opens the public portal, submits their details, and receives a
-reference number. The intake is rate-limited and validated, and a confirmation
-email is sent to the requester while handlers are notified of the new request.
+- **Public intake with tracking** — reference-number submission and status lookup without sign-in.
+- **Shared staff inbox** — centralized triage, assignment, status management, and email replies.
+- **Multi-account tickets** — multiple account requests handled within a single ticket and decision flow.
+- **Role-based access control** — permissions aligned to ENVIS roles (Admin, Regional Director, EMED, CPD, MIS, Extractor, GIS).
+- **Email outbox & audit trail** — logged correspondence with retry support for failed deliveries.
+- **Secure-by-default design** — hardened authentication, protected routes, and credential-safe handling.
 
-### 2. Staff inbox triage
-
-Handlers see new requests in the shared inbox, open the request, and can:
-
-- change its status (New → In Review → Contacted → Approved / Rejected / Closed)
-- assign it to a handler
-- reply to the requester directly by email
-- read the full email thread for that request
-
-### 3. Internal tickets
-
-Staff create tickets for account work. A single ticket can contain **multiple
-account rows**, each with its own role, division, and status. The conversation
-view keeps the request, the account list, and handler actions side by side.
-
-### 4. Account decisions
-
-Handlers approve or reject accounts individually or in bulk. Approving an
-account provisions the ENVIS account, assigns the requested role and division,
-and emails the credentials to the requester. Rejections notify the requester
-with the recorded reason.
-
-### 5. Email correspondence
-
-Every notification, reply, and credential delivery is queued through the email
-service and logged in the **Email Outbox**. Failed deliveries can be retried
-without recreating the message, so correspondence is never silently lost.
-
-### 6. Users and roles
-
-Administrators can enable or disable users, reset passwords, and change roles.
-Role permissions decide who can view all tickets, approve or reject accounts,
-manage users, and manage accounts.
+## Roles & Permissions
 
 | Permission | Admin | Regional Director | EMED | CPD | MIS | Extractor | GIS |
-|---|---|---|---|---|---|---|---|
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | View all tickets | ✓ | ✓ | ✓ | ✓ | ✓ | | |
 | Approve accounts | ✓ | ✓ | ✓ | ✓ | ✓ | | |
 | Reject accounts | ✓ | ✓ | ✓ | ✓ | ✓ | | |
@@ -85,103 +94,23 @@ manage users, and manage accounts.
 | Create tickets | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | View own tickets | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
-## Architecture
+## Security & Data Handling
 
-| Layer | Technology |
+- **No credentials in the repository.** Secrets and passwords are never committed; sensitive configuration is managed outside version control.
+- **Strong authentication & authorization.** Short-lived sessions, role-based access on every route, and ownership checks for protected resources.
+- **Protected credential handling.** Passwords are stored as one-way hashes and are never exposed through the interface or API.
+- **Hardened application surface.** Parameterized data access, strict request validation, rate limiting on sensitive/public endpoints, locked-down CORS and security headers, and redaction of sensitive values from logs and errors.
+- **Auditable operations.** Requests, account decisions, and email correspondence are recorded to support traceability.
+
+## Technology
+
+| Layer | Stack |
 |---|---|
-| Frontend | Vite + React + TypeScript + Tailwind CSS |
-| Backend | Node.js + Express + TypeScript |
-| Database | SQLite (better-sqlite3, WAL mode) |
-| Email | Nodemailer over SMTP |
-| Auth | Short-lived JWT access tokens |
-
-```
-├── shared/     Shared types, roles, permissions, validation helpers
-├── backend/    Express API, database schema and seed, email service
-│   ├── routes/     Auth, tickets, accounts, requests, users, emails
-│   ├── services/   SMTP transport and email templates
-│   ├── middleware/ Authentication, authorisation, security headers
-│   └── utils/      Database, JWT, validation, encrypted secret store
-└── frontend/   React single-page application
-    ├── pages/      Login, public portal, dashboard, ticket, inbox, settings
-    └── components/ App shell, conversation view, account panels
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 22+ (required by better-sqlite3)
-- npm 10+
-
-### Install
-
-```bash
-npm install
-npm run build --workspace=shared
-```
-
-### Run
-
-```bash
-npm run dev
-```
-
-The first backend start creates the database, applies the schema, and seeds the
-base roles. The database and its credentials file are created outside version
-control and are never committed.
-
-### Build for production
-
-```bash
-npm run build
-npm run start --workspace=backend
-```
-
-In production mode the backend serves the built frontend from the same origin
-and applies a Content Security Policy appropriate for both the API and the
-application.
-
-## Accounts and Secrets
-
-This repository contains **no credentials**.
-
-- Account passwords are supplied at provisioning time (or generated randomly),
-  stored as bcrypt hashes, and never returned by the API.
-- JWT signing keys, SMTP credentials, and notification addresses live in an
-  AES-256-GCM encrypted store outside the repository, unlocked by a local key
-  file owned by the operating-system account running the service.
-- Real environment variables always take precedence, so a deployment can inject
-  secrets through its platform instead of using the local store.
-- Run the interactive secret setup to create or rotate the local store:
-
-```bash
-npm run secrets:setup --workspace=backend
-```
-
-- `.env` holds only non-sensitive runtime configuration (mode, database path,
-  SMTP host and port). It is git-ignored, and the file permissions are
-  restricted to the service account.
-- Existing accounts are never re-hashed on startup, so password changes made in
-  the application are preserved.
-
-Never commit `.env`, the database, generated credentials, or email exports.
-Rotate secrets immediately if any of them is ever exposed.
-
-## Security Notes
-
-- Role-based authorisation on every route, with ownership checks for tickets.
-- Internal notes are hidden from users who cannot approve accounts.
-- Parameterised SQL everywhere; no user value is concatenated into a query.
-- Identical error messages and a dummy hash comparison on failed sign-in.
-- Per-IP rate limits on the API, sign-in, and public intake.
-- Strict CORS allowlist, hardened security headers, and no framework fingerprint.
-- Secrets are redacted from logs and API error responses.
-- Passwords hashed with bcrypt; account passwords are never displayed in the UI.
-
-For an internet-facing deployment, terminate TLS at a reverse proxy, enable
-`TRUST_PROXY` so client IPs are resolved correctly, use httpOnly cookie sessions,
-and add multi-factor authentication for privileged roles.
+| Frontend | React, TypeScript, Vite, Tailwind CSS |
+| Backend | Node.js, Express, TypeScript |
+| Data | SQLite (WAL) with parameterized access |
+| Email | SMTP via Nodemailer |
+| Auth | JWT-based sessions with role permissions |
 
 ## License
 
