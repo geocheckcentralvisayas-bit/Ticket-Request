@@ -37,11 +37,24 @@ function generatePassword(): string {
   return crypto.randomBytes(18).toString('base64url');
 }
 
+function envKey(username: string, prefix: string): string {
+  return `${prefix}_${username.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`;
+}
+
 function credentialFor(account: SeedAccount): string | null {
-  const perUser = process.env[`SEED_PASSWORD_${account.username.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`];
+  const perUser = process.env[envKey(account.username, 'SEED_PASSWORD')];
   if (perUser && perUser.length >= 8) return perUser;
   if (process.env.SEED_DEFAULT_PASSWORD && process.env.SEED_DEFAULT_PASSWORD.length >= 8) {
     return process.env.SEED_DEFAULT_PASSWORD;
+  }
+  return null;
+}
+
+function bootstrapPasswordFor(account: SeedAccount): string | null {
+  const perUser = process.env[envKey(account.username, 'BOOTSTRAP_PASSWORD')];
+  if (perUser && perUser.length >= 8) return perUser;
+  if (process.env.BOOTSTRAP_PASSWORD && process.env.BOOTSTRAP_PASSWORD.length >= 8) {
+    return process.env.BOOTSTRAP_PASSWORD;
   }
   return null;
 }
@@ -52,10 +65,17 @@ export async function seedDatabase(database: Database.Database = defaultDb) {
     VALUES (?, ?, ?, ?, ?, ?, 1, datetime('now'))
   `);
 
-  // Only refresh display metadata; never overwrite an existing password hash.
+  // Refresh display metadata. Passwords are only changed when an explicit
+  // BOOTSTRAP_PASSWORD(_<USERNAME>) is provided (e.g. first deploy/recovery).
   const updateUser = database.prepare(`
     UPDATE users
     SET email = ?, full_name = ?, role = ?, division = ?, updated_at = datetime('now')
+    WHERE username = ?
+  `);
+
+  const updatePassword = database.prepare(`
+    UPDATE users
+    SET password_hash = ?, updated_at = datetime('now')
     WHERE username = ?
   `);
 
@@ -68,14 +88,21 @@ export async function seedDatabase(database: Database.Database = defaultDb) {
 
     if (existing) {
       updateUser.run(account.email, account.full_name, account.role, account.division, account.username);
+
+      const bootstrap = bootstrapPasswordFor(account);
+      if (bootstrap) {
+        const hash = await bcrypt.hash(bootstrap, 12);
+        updatePassword.run(hash, account.username);
+        console.warn(`Password reset via bootstrap for: ${account.username}`);
+      }
       continue;
     }
 
-    const password = credentialFor(account) ?? generatePassword();
+    const password = credentialFor(account) ?? bootstrapPasswordFor(account) ?? generatePassword();
     const hash = await bcrypt.hash(password, 12);
     insertUser.run(account.username, account.email, hash, account.full_name, account.role, account.division);
 
-    if (!credentialFor(account)) {
+    if (!credentialFor(account) && !bootstrapPasswordFor(account)) {
       generated.push({ username: account.username, password });
     }
     console.log(`Created account: ${account.username} (${account.role})`);
