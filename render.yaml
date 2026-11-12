@@ -2,19 +2,17 @@ services:
   - type: web
     name: envis-ticket-system
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm ci && npm run build
     startCommand: npm run start --workspace=backend
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 3002
       - key: TRUST_PROXY
         value: "1"
       - key: DB_PATH
-        value: /var/data/envis.db
+        value: ./data/envis.db
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -33,7 +31,3 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
-    disk:
-      name: envis-data
-      mountPath: /var/data
-      sizeGB: 1
