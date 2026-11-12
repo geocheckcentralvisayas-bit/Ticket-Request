@@ -185,4 +185,5 @@ and add multi-factor authentication for privileged roles.
 
 ## License
 
-Internal use only — DENR-EMB Region VII.
+Copyright (c) 2026 **Kent Agbayani (K3nt-Bytes)** and **EMB MIS, DENR-EMB Region VII**.  
+All rights reserved. Internal/official use only — see [LICENSE](LICENSE) for details.
